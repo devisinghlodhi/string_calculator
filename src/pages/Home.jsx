@@ -2,7 +2,15 @@ import React, { useState, useEffect } from 'react'
 
 
 function add(numberes) {
-    return 0;
+
+    if(numberes.trim() === "") return 0;
+
+    const numbers = numberes.split(",").map((num) => parseInt(num));
+    let sum = 0;
+    for(let i = 0; i < numbers.length; i++) {
+        sum += numbers[i];
+    }
+    return sum;
 }
 
 export default function Home() {
