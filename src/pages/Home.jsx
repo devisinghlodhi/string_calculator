@@ -1,16 +1,48 @@
 import React, { useState, useEffect } from 'react'
 
 
-function add(numberes) {
+function add(numbers) {
 
-    if(numberes.trim() === "") return 0;
+    if(numbers.trim() === "") return 0;
 
-    const numbers = numberes.split(",").map((num) => parseInt(num));
-    let sum = 0;
-    for(let i = 0; i < numbers.length; i++) {
-        sum += numbers[i];
+    let delimiters = ['\n'];
+
+    if (numbers.startsWith("//")) {
+        const newlineIndex = numbers.indexOf("\n");
+        if (newlineIndex !== -1) {
+            delimiters = [numbers.slice(2, newlineIndex)];
+            numbers = numbers.slice(newlineIndex + 1);
+        }
     }
+
+    for (let delimiter of delimiters) {
+        while (numbers.includes(delimiter)) {
+            numbers = numbers.split(delimiter).join(",");
+        }
+    }
+
+    const numArray = numbers.split(",").map(n => n.trim()).filter(n => n !== '');
+
+    const negatives = [];
+    let sum = 0;
+
+    for (let n of numArray) {
+        const num = parseInt(n);
+        if (!isNaN(num)) {
+            if (num < 0) {
+                negatives.push(num);
+            }
+            sum += num;
+        }
+    }
+
+    if (negatives.length > 0) {
+        throw new Error(`negative numbers not allowed ${negatives.join(',')}`);
+    }
+
     return sum;
+
+
 }
 
 export default function Home() {
@@ -37,7 +69,7 @@ export default function Home() {
                 </h1>
                 
                 <div className="flex gap-6">
-                    <input
+                    <textarea
                         type="text"
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
