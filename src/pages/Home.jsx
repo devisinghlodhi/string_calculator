@@ -41,8 +41,6 @@ function add(numbers) {
     }
 
     return sum;
-
-
 }
 
 export default function Home() {
@@ -57,7 +55,15 @@ export default function Home() {
 
 
     const handleCalculate = () => {
-        setOutput(add(input));
+        try {
+            const result = add(input);    
+            setOutput({type: "success", message: result});
+        } catch (error) {
+            console.log(error.message);
+            setOutput({type: "error", message: error.message});
+        }
+        
+        
     }
 
     return (
@@ -78,16 +84,26 @@ export default function Home() {
                     />
                     <button
                         onClick={handleCalculate}
-                        className="px-8 py-4 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all text-lg"
+                        className=" max-h-16 px-8 py-4 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all text-lg"
                     >
                         Calculate
                     </button>
                 </div>
 
-                <div className={`mt-10 p-6 rounded-xl border transition-all duration-300 ${
-                    (output !== null) ? "bg-green-50 border-green-400" : "bg-gray-50 border-gray-200"
-                } min-h-[120px] flex items-center justify-center`}>
-                    {(output !== null) && <p className="text-green-700 text-xl font-semibold">{output}</p>}
+                <div 
+                    className={`overflow-auto mt-8 p-6 rounded-xl border transition-all duration-300 min-h-[180px] max-h-[400px] w-full ${
+                        output
+                            ? output.type === "success"
+                                ? "bg-green-50 border-green-400"
+                                : "bg-red-50 border-red-400"
+                            : "bg-gray-50 border-gray-200"
+                    }`}
+                >
+                    {output && (
+                        <p className={`${output.type === "success" ? "text-green-700" : "text-red-700"} text-lg md:text-xl font-semibold whitespace-pre-wrap`}>
+                            {output.message}
+                        </p>
+                    )}
                 </div>
             </div>
         </div>
